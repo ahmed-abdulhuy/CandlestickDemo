@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Candlestick Chart with Line Chart</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.29.0/dist/apexcharts.min.css">
+    <style
+        type="text/css">
+        body {
+            background-color: #eee;
+        }
+    </style>
+</head>
+<body>
+    <div id="chart"></div>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.29.0/dist/apexcharts.min.js"></script>
+    <script>
+        const candlestickData = [];
+        const lineChartData = [];
+
+        const startDate = new Date('2023-10-01').getTime();
+        const endDate = new Date('2023-11-30').getTime();
+        const minPrice = 50;
+        const maxPrice = 150;
+
+        for (let i = 0; i < 100; i++) {
+            const x = new Date(startDate + (i * 24 * 60 * 60 * 1000)).getTime();
+            const open = getRandomNumber(minPrice, maxPrice);
+            const high = getRandomNumber(open, maxPrice);
+            const low = getRandomNumber(minPrice, open);
+            const close = getRandomNumber(low, high);
+            const lineValue = getRandomNumber(minPrice, maxPrice);
+
+            candlestickData.push({ x, y: [open, high, low, close] });
+            lineChartData.push({ x, y: lineValue });
+        }
+
+        function getRandomNumber(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+
+        const combinedData = [
+            {
+                name: 'Candlestick',
+                type: 'candlestick',
+                data: candlestickData,
+                colors: {
+                    upward: '#44AAAA', // Color for upward candles
+                    downward: '#AAAA44' // Color for downward candles
+                },
+                wick: {
+                    useFillColor: true, // Use body color for wick
+                    strokeWidth: 1,       // Set the width of the candlestick wick
+                },
+                body: {
+                    useFillColor: true, // Use body color for body
+                    strokeWidth: 1,       // Set the width of the candlestick body
+                }
+            },
+            {
+                name: 'Line Chart',
+                type: 'line',
+                data: lineChartData,
+            }
+        ];
+        // Define options for the mixed chart
+        const options = {
+            chart: {
+                type: 'candlestick',
+                // stackedType: 'line',
+                height: 600,
+            },
+            xaxis: {
+                type: 'datetime',
+            },
+        };
+
+
+        // Create the mixed chart
+        const chart = new ApexCharts(document.querySelector("#chart"), 
+        {
+            ...options, 
+            series: combinedData,
+        }
+        );
+        // Render the chart
+        chart.render();
+
+    </script>
+</body>
+</html>
